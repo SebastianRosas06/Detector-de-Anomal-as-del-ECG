@@ -1,0 +1,3 @@
+import wfdb
+
+wfdb.dl_database('mitdb', dl_dir='../data/mitdb', records=['100', '106', '200'])
