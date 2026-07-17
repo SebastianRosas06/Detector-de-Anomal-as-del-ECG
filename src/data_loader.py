@@ -29,7 +29,7 @@ def graficarRange(record, annotation, inicio, fin):
     seg = record.p_signal[inicio:fin, 0]
     time = np.arange(inicio, fin) /record.fs
     plt.plot(time, seg)
-    picos = annotation.sample[annotation.sample < fin & annotation.sample > inicio]
+    picos = annotation.sample[annotation.sample < fin & annotation.sample > inicio] - inicio
     timehigh = picos / record.fs
     plt.scatter(timehigh, seg[picos], color='red', label='R-peaks')
     plt.title('ECG Signal with R-peaks')
