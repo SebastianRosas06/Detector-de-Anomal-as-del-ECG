@@ -23,7 +23,7 @@ fs = 360 #Frecuencia de muestreo
 duración = 10
 x = np.linspace(0, duración, int(fs * duración))
 latido = np.sin(2 * np.pi * fm * x)
-
+plt.figure(Figure=(10, 6))
 plt.plot(x, latido)
 plt.xlim(0, 10)
 #Pero esta señal aún no tiene ruido, por lo que primero le añadiremos ruido de forma aleatoria para 
@@ -56,3 +56,4 @@ print(f'Correlación entre la señal original y la señal filtrada:' , correlaci
 #Haremos lo mismo con la señal sintética, para ver si el filtro es capaz de eliminar el ruido de la señal sintética.
 correlacion_sintetica = np.corrcoef(latido, latido_filtrado)[0, 1]
 print(f'Correlación entre la señal sintética y la señal filtrada:' , correlacion_sintetica)
+plt.show()
