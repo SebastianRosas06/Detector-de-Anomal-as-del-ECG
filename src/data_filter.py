@@ -57,3 +57,4 @@ print(f'Correlación entre la señal original y la señal filtrada:' , correlaci
 correlacion_sintetica = np.corrcoef(latido, latido_filtrado)[0, 1]
 print(f'Correlación entre la señal sintética y la señal filtrada:' , correlacion_sintetica)
 plt.show()
+#Ahora, 

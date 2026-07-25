@@ -1,41 +1,72 @@
+import os
 import wfdb
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-wfdb.dl_database('mitdb', dl_dir='../src/data/mitdb', records=['100', '106', '200'])
+
+#wfdb.dl_database('mitdb', dl_dir='../src/data/mitdb', records=['100', '106', '200'])
 PROJECT_ROOT = Path(__file__).parent.parent
+class Loader:
 
-def analisis(path):
-    record = wfdb.rdrecord(path)
-    annotation = wfdb.rdann(path, 'atr')
-    return record, annotation
+    def __init__(self, record_path):
+        self.record_path = str(record_path)
+        self.record, self.annotation = self.analisis()
+    
+    def analisis(self):
+        print("Obteniendo record")
+        record = wfdb.rdrecord(self.record_path)
+        print("Obteniendo annotation")
+        annotation = wfdb.rdann(self.record_path, 'atr')
+        print("Record:",record," Annotation:",annotation)
+        return record, annotation
 
-def graficar(record, annotation):
-    fin = int(5 * record.fs)
-    seg = record.p_signal[0:fin, 0]
-    time = np.arange(0, fin) / record.fs
-    plt.plot(time, seg)
-    picos = annotation.sample[annotation.sample < fin]
-    timehigh = picos / record.fs
-    plt.scatter(timehigh, seg[picos], color='red', label='R-peaks')
-    plt.title('ECG Signal with R-peaks')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Amplitude')
-    plt.legend()
-    plt.show()
+    def graficar(self, segundos):
+        fin = int(segundos * self.record.fs)
+        seg = self.record.p_signal[0:fin, 0]
+        time = np.arange(0, fin) / self.record.fs
+        plt.plot(time, seg)
+        picos = self.annotation.sample[self.annotation.sample < fin]
+        timehigh = picos / self.record.fs
+        plt.scatter(timehigh, seg[picos], color='red', label='R-peaks')
+        plt.title('ECG Signal')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Amplitude')
+        plt.legend()
+        plt.show()
 
-def graficarRange(record, annotation, inicio, fin):
-    seg = record.p_signal[inicio:fin, 0]
-    time = np.arange(inicio, fin) /record.fs
-    plt.plot(time, seg)
-    picos = annotation.sample[annotation.sample < fin & annotation.sample > inicio] - inicio
-    timehigh = picos / record.fs
-    plt.scatter(timehigh, seg[picos], color='red', label='R-peaks')
-    plt.title('ECG Signal with R-peaks')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Amplitude')
-    plt.legend()
-    plt.show()
+    def graficarRange(self, inicio, fin):
+        seg = self.record.p_signal[inicio:fin, 0]
+        time = np.arange(inicio, fin) / self.record.fs
+        plt.plot(time, seg)
+        picos = self.annotation.sample[(self.annotation.sample < fin) & (self.annotation.sample > inicio)] - inicio
+        timehigh = picos / self.record.fs
+        plt.scatter(timehigh, seg[picos], color='red', label='R-peaks')
+        plt.title('ECG Signal with limits')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Amplitude')
+        plt.legend()
+        plt.show()
 
-record, annotation = analisis('../src/data/mitdb/100')
+if __name__ == "__main__":
+    PROJECT_ROOT = Path(__file__).parent.parent
+    dir_mitdb = PROJECT_ROOT / "data" / "mitdb"
+    path_datos = dir_mitdb / "100"
+
+    archivo_hea = Path(f"{path_datos}.hea")
+    if not archivo_hea.exists():
+        print(
+            " No se encontraron los archivos locales. Descargando el registro '100' de MITDB..."
+        )
+        os.makedirs(dir_mitdb, exist_ok=True)
+        wfdb.dl_database("mitdb", dl_dir=str(dir_mitdb), records=["100"])
+        print(" ¡Descarga completada!")
+
+    # 1. Crear la instancia cargando los datos
+    ecg = Loader(path_datos)
+
+    # 2. Graficar los primeros 5 segundos
+    ecg.graficar(5)
+
+    # 3. Graficar un rango personalizado por muestras
+    ecg.graficarRange(inicio=1000, fin=3000)
