@@ -45,7 +45,7 @@ class Pan_tompkins():
         umbral = 0.3 * convolv.max()
         picos = find_peaks(convolv, height = umbral, distance = int(0.25 * record.fs))[0]
         plt.plot(time,seg)
-        plt.scatter(time[:-1][picos], seg[:-1][picos] * seg.max(), color='red', label='R-peaks')
+        plt.scatter(time[:-1][picos], seg[:-1][picos], color='red', label='R-peaks')
         plt.title('Señal con los picos R detectados')
         plt.xlabel('Tiempo (s)')
         plt.ylabel('Amplitud')
