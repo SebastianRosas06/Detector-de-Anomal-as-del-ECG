@@ -9,15 +9,15 @@ from data_loader import Loader as data;
 # el número de muestras, etc.
 class Filter():
 
-    def __init__(self, record_path) -> None:
+    def __init__(self, record_path):
         loaderr = data(record_path)
         self.record_path = str(record_path)
         self.record = loaderr.record
         self.annotation = loaderr.annotation
         print("Record:",self.record," Annotation:",self.annotation)
         pass
-
-    def bandpass_filter(self, signaldata, lowcut, highcut, fs, order):
+    @staticmethod
+    def bandpass_filter(signaldata, lowcut, highcut, fs, order):
         from scipy.signal import butter, filtfilt
         nyq = 0.5 * fs
         low = lowcut / nyq
