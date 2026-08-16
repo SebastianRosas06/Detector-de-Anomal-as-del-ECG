@@ -25,10 +25,10 @@ class Pan_tompkins():
         print("Record:",self.record," Annotation:",self.annotation)
         pass
 
-    def find_peaks(self, record):
+    def find_peaks(self, record, duracion):
 
-        time = np.arange(0, 10 * record.fs) / record.fs
-        segn = record.p_signal[:10 * record.fs, 0] 
+        time = np.arange(0, duracion * record.fs) / record.fs
+        segn = record.p_signal[:duracion * record.fs, 0] 
         #Ahora, tenemos que filtrar la señal previo a derivarla, para tener una señal más limpia
         seg = filtro.bandpass_filter(segn, 0.5, 40, record.fs, order=5)
         #Ahora, que obtuvimos la señal, debemos encontrar su "derivada" o tasa de crecimiento, para esto, podemos usar la función np.diff
@@ -69,5 +69,5 @@ class Pan_tompkins():
 if  __name__ == "__main__":
     ecg = data('../src/data/mitdb/100')
     pan_tompkins = Pan_tompkins(ecg.record_path)
-    picos, time, seg, convolv = pan_tompkins.find_peaks(ecg.record)
+    picos, time, seg, convolv = pan_tompkins.find_peaks(ecg.record, 10)
     pan_tompkins.comprobar(picos, time, ecg.annotation, seg, ecg.record)
