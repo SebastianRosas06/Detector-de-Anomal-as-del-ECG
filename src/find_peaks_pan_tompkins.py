@@ -25,10 +25,13 @@ class Pan_tompkins():
         print("Record:",self.record," Annotation:",self.annotation)
         pass
 
-    def find_peaks(self, record, duracion):
-
-        time = np.arange(0, duracion * record.fs) / record.fs
-        segn = record.p_signal[:duracion * record.fs, 0] 
+    def find_peaks(self, record, graficar=False, duracion=None):
+        if duracion == None:
+            n_muestras = len(record.p_signal)
+        else:
+            n_muestras = int(duracion * record.fs)
+        time = np.arange(0, n_muestras) / record.fs
+        segn = record.p_signal[:n_muestras, 0] 
         #Ahora, tenemos que filtrar la señal previo a derivarla, para tener una señal más limpia
         seg = filtro.bandpass_filter(segn, 0.5, 40, record.fs, order=5)
         #Ahora, que obtuvimos la señal, debemos encontrar su "derivada" o tasa de crecimiento, para esto, podemos usar la función np.diff
@@ -44,30 +47,36 @@ class Pan_tompkins():
         #Ahora, debemos buscar los picos R en la señal ya suavizada, para esto, podemos usar la función find_peaks de scipy.signal.find_peaks, y un umbral de 0.5
         umbral = 0.3 * convolv.max()
         picos = find_peaks(convolv, height = umbral, distance = int(0.25 * record.fs))[0]
-        #plt.plot(time,seg)
-        #plt.scatter(time[:-1][picos], seg[:-1][picos], color='red', label='R-peaks')
-        #plt.title('Señal con los picos R detectados')
-        #plt.xlabel('Tiempo (s)')
-        #plt.ylabel('Amplitud')
-        #plt.show()
+        if graficar == True:
+            plt.plot(time,seg)
+            plt.scatter(time[:-1][picos], seg[:-1][picos], color='red', label='R-peaks')
+            plt.title('Señal con los picos R detectados')
+            plt.xlabel('Tiempo (s)')
+            plt.ylabel('Amplitud')
+            plt.show()
         return picos, time, seg, convolv
 
 
-    def comprobar(self, picos, time, annotation, seg, record):
+    def comprobar(self, picos, time, annotation, seg, record, graficar=False, duracion = None):
         #Ahora, podemos comprobar con las anotaciones del registro, para esto, podemos usar la función rdann de wfdb, y el archivo de anotaciones correspondiente al registro.
-        picos_reales = annotation.sample[annotation.sample < 10 * record.fs]
+        if duracion == None:
+            n_muestras = len(seg)
+            picos_reales = annotation.sample[annotation.sample < n_muestras]
+        else:
+            picos_reales = annotation.sample[annotation.sample < duracion * record.fs]
         tiempos_detectados = time[:-1][picos]
         tiempos_reales = picos_reales / record.fs
-        #plt.plot(time, seg)
-        #plt.scatter(tiempos_reales, [seg.max()] * len(tiempos_reales), marker='x', color='r')
-        #plt.scatter(tiempos_detectados, [seg.max() * 1.1] * len(tiempos_detectados), marker='o', color='g')
-        #plt.legend(['Señal de ECG', 'Picos R detectados', 'Picos R reales'])
-        #plt.title("Reporte final")
-        #plt.show()
+        if graficar == True:
+            plt.plot(time, seg)
+            plt.scatter(tiempos_reales, [seg.max()] * len(tiempos_reales), marker='x', color='r')
+            plt.scatter(tiempos_detectados, [seg.max() * 1.1] * len(tiempos_detectados), marker='o', color='g')
+            plt.legend(['Señal de ECG', 'Picos R detectados', 'Picos R reales'])
+            plt.title("Reporte final")
+            plt.show()
 
 
 if  __name__ == "__main__":
     ecg = data('../src/data/mitdb/100')
     pan_tompkins = Pan_tompkins(ecg.record_path)
-    picos, time, seg, convolv = pan_tompkins.find_peaks(ecg.record, 10)
-    pan_tompkins.comprobar(picos, time, ecg.annotation, seg, ecg.record)
+    picos, time, seg, convolv = pan_tompkins.find_peaks(ecg.record, graficar=True)
+    pan_tompkins.comprobar(picos, time, ecg.annotation, seg, ecg.record, True)

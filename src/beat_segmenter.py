@@ -27,11 +27,13 @@ class Beat_segmenter():
         return amplitudes
     @staticmethod
     def calcular_intervalos_rr(picos, fs):
-        """Intervalo RR (segundos) entre cada pico y el anterior."""
+        if len(picos) < 2:
+            return np.zeros(len(picos))  # no hay suficientes picos para calcular RR
+        
         rr = np.zeros(len(picos))
         for i in range(1, len(picos)):
             rr[i] = (picos[i] - picos[i - 1]) / fs
-        rr[0] = rr[1]  # el primero no tiene "anterior", se rellena con el segundo
+        rr[0] = rr[1]
         return rr
     
     @staticmethod
@@ -72,7 +74,7 @@ if __name__ == "__main__":
 
     ecg = Loader('../data/mitdb/100')
     pt = Pan_tompkins(ecg.record_path)
-    picos, time, seg, convolv = pt.find_peaks(ecg.record, 10)
+    picos, time, seg, convolv = pt.find_peaks(ecg.record)
 
     segmentador = Beat_segmenter(seg, picos, ecg.annotation, ecg.record.fs)
     tabla = segmentador.tabular(picos, ecg.annotation, ecg.record.fs)
