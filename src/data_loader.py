@@ -51,19 +51,25 @@ class Loader:
 if __name__ == "__main__":
     PROJECT_ROOT = Path(__file__).parent.parent
     dir_mitdb = PROJECT_ROOT / "data" / "mitdb"
-    path_datos = dir_mitdb / "100"
-
-    archivo_hea = Path(f"{path_datos}.hea")
-    if not archivo_hea.exists():
-        print(
-            " No se encontraron los archivos locales. Descargando el registro '100' de MITDB..."
-        )
+    
+    registros_necesarios = ["100", "101", "103", "105", "112", "113", "115", "121", "220", "230",
+    "106", "116", "119", "200", "203", "205", "213", "215", "233",
+    "201", "202", "210", "217", "221",
+    "109", "111", "118", "124", "212",
+    "108"]
+    
+    faltantes = [r for r in registros_necesarios if not (dir_mitdb / f"{r}.hea").exists()]
+    
+    if faltantes:
+        print(f"Descargando registros faltantes: {faltantes}")
         os.makedirs(dir_mitdb, exist_ok=True)
-        wfdb.dl_database("mitdb", dl_dir=str(dir_mitdb), records=["100"])
-        print(" ¡Descarga completada!")
+        wfdb.dl_database("mitdb", dl_dir=str(dir_mitdb), records=faltantes)
+        print("¡Descarga completada!")
+    else:
+        print("Todos los registros ya están descargados.")
 
     # 1. Crear la instancia cargando los datos
-    ecg = Loader(path_datos)
+    ecg = Loader(dir_mitdb / "100")
 
     # 2. Graficar los primeros 5 segundos
     ecg.graficar(5)

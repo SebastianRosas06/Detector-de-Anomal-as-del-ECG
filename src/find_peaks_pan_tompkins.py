@@ -44,12 +44,12 @@ class Pan_tompkins():
         #Ahora, debemos buscar los picos R en la señal ya suavizada, para esto, podemos usar la función find_peaks de scipy.signal.find_peaks, y un umbral de 0.5
         umbral = 0.3 * convolv.max()
         picos = find_peaks(convolv, height = umbral, distance = int(0.25 * record.fs))[0]
-        plt.plot(time,seg)
-        plt.scatter(time[:-1][picos], seg[:-1][picos], color='red', label='R-peaks')
-        plt.title('Señal con los picos R detectados')
-        plt.xlabel('Tiempo (s)')
-        plt.ylabel('Amplitud')
-        plt.show()
+        #plt.plot(time,seg)
+        #plt.scatter(time[:-1][picos], seg[:-1][picos], color='red', label='R-peaks')
+        #plt.title('Señal con los picos R detectados')
+        #plt.xlabel('Tiempo (s)')
+        #plt.ylabel('Amplitud')
+        #plt.show()
         return picos, time, seg, convolv
 
 
@@ -58,12 +58,12 @@ class Pan_tompkins():
         picos_reales = annotation.sample[annotation.sample < 10 * record.fs]
         tiempos_detectados = time[:-1][picos]
         tiempos_reales = picos_reales / record.fs
-        plt.plot(time, seg)
-        plt.scatter(tiempos_reales, [seg.max()] * len(tiempos_reales), marker='x', color='r')
-        plt.scatter(tiempos_detectados, [seg.max() * 1.1] * len(tiempos_detectados), marker='o', color='g')
-        plt.legend(['Señal de ECG', 'Picos R detectados', 'Picos R reales'])
-        plt.title("Reporte final")
-        plt.show()
+        #plt.plot(time, seg)
+        #plt.scatter(tiempos_reales, [seg.max()] * len(tiempos_reales), marker='x', color='r')
+        #plt.scatter(tiempos_detectados, [seg.max() * 1.1] * len(tiempos_detectados), marker='o', color='g')
+        #plt.legend(['Señal de ECG', 'Picos R detectados', 'Picos R reales'])
+        #plt.title("Reporte final")
+        #plt.show()
 
 
 if  __name__ == "__main__":
