@@ -2,7 +2,6 @@
 
 > Pipeline completo de procesamiento de señales ECG: filtrado, detección de picos R (Pan-Tompkins), extracción de features y clasificación de latidos anómalos, usando el MIT-BIH Arrhythmia Database.
 
-*(Aquí va un GIF o captura del demo de Streamlit una vez esté listo — primera imagen que ve un reclutador.)*
 
 ## Motivación
 
