@@ -1,6 +1,5 @@
-from os import name
-import wfdb;
 import numpy as np;
+from pathlib import Path;
 import matplotlib.pyplot as plt;
 from data_loader import Loader as data;
 #Objeto wfdb, aplica función dl_database para descargar la base de datos 'mitdb'
@@ -27,7 +26,9 @@ class Filter():
         return y
 
 if __name__ == "__main__":
-    ecg = data('../src/data/mitdb/100')
+    PROJECT_ROOT = Path(__file__).parent.parent
+    dir_mitdb = PROJECT_ROOT / "data" / "mitdb" /"100"
+    ecg = data(dir_mitdb)
     filtro = Filter(ecg.record_path)
 
     #Creamos una señal cualquiera, sabemos que la frecuencia de muestreo es de 360 Hz

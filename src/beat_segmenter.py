@@ -1,6 +1,7 @@
 import numpy as np;
 import matplotlib.pyplot as plt
 from data_loader import Loader as data;
+from pathlib import Path;
 import pandas as pd;
 class Beat_segmenter():
 
@@ -103,7 +104,9 @@ if __name__ == "__main__":
     from data_loader import Loader
     from find_peaks_pan_tompkins import Pan_tompkins
 
-    ecg = Loader('../data/mitdb/100')
+    PROJECT_ROOT = Path(__file__).parent.parent
+    dir_mitdb = PROJECT_ROOT / "data" / "mitdb" /"100"
+    ecg = Loader(dir_mitdb)
     pt = Pan_tompkins(ecg.record_path)
     picos, time, seg, convolv = pt.find_peaks(ecg.record)
 

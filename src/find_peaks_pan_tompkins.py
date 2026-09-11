@@ -8,8 +8,7 @@
 #2.-Elevar todo al cuadrado, de esta manera, los picos R serán los puntos más altos de la señal, y los picos negativos serán los puntos más bajos de la señal.
 #3.-Aplicar un filtro de media móvil, de esta manera, los picos R serán los puntos más altos de la señal, y los picos negativos serán los puntos más bajos 
 #4.-Buscar los picos R en la señal ya suavizada
-
-import wfdb;
+from pathlib import Path;
 import numpy as np;
 import matplotlib.pyplot as plt;
 from scipy.signal import find_peaks;
@@ -76,7 +75,9 @@ class Pan_tompkins():
 
 
 if  __name__ == "__main__":
-    ecg = data('../src/data/mitdb/100')
+    PROJECT_ROOT = Path(__file__).parent.parent
+    dir_mitdb = PROJECT_ROOT / "data" / "mitdb" /"100"
+    ecg = data(dir_mitdb)
     pan_tompkins = Pan_tompkins(ecg.record_path)
-    picos, time, seg, convolv = pan_tompkins.find_peaks(ecg.record, graficar=True)
+    picos, time, seg, convolv = pan_tompkins.find_peaks(ecg.record, graficar=True, duracion=10)
     pan_tompkins.comprobar(picos, time, ecg.annotation, seg, ecg.record, True)
