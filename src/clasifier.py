@@ -27,7 +27,7 @@ for r in registros:
     ecg = Loader(str(path_registro))  # ruta absoluta, no depende del cwd
     pt = Pan_tompkins(ecg.record_path)
     picos, time, seg, convolv = pt.find_peaks(ecg.record)
-    
+    picos = pt.refinar_picos(picos, seg, ecg.record.fs)
     segmentador = Beat_segmenter(seg, picos, ecg.annotation, ecg.record.fs)
     df_registro = segmentador.tabular(picos, ecg.annotation, ecg.record.fs)
     #Añadimos al vector en la ubicación del registro, todo lo que hicimos operando a dicho registro

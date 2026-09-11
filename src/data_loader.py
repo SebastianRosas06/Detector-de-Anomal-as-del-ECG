@@ -14,11 +14,11 @@ class Loader:
         self.record, self.annotation = self.analisis()
     
     def analisis(self):
-        print("Obteniendo record")
+        #print("Obteniendo record")
         record = wfdb.rdrecord(self.record_path)
-        print("Obteniendo annotation")
+        #print("Obteniendo annotation")
         annotation = wfdb.rdann(self.record_path, 'atr')
-        print("Record:",record," Annotation:",annotation)
+        #print("Record:",record," Annotation:",annotation)
         return record, annotation
 
     def graficar(self, segundos):
